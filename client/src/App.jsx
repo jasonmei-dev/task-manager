@@ -15,9 +15,9 @@ function App() {
     setTasks(updatedTasks);
   };
 
-  const handleEditTask = (task, index) => {
-    const updatedTasks = tasks.filter((task, taskIndex) => taskIndex !== index);
-    updatedTasks.splice(index, 0, task);
+  const handleEditTask = (updatedTask, index) => {
+    const updatedTasks = [...tasks];
+    updatedTasks[index] = updatedTask;
     setTasks(updatedTasks);
   };
 

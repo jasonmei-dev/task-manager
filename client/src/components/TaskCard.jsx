@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 const TaskCard = ({ task, taskIndex, handleEditTask, handleDeleteTask }) => {
   const [editMode, setEditMode] = useState(false);
-  const [taskValue, setTaskValue] = useState('');
+  const [taskValue, setTaskValue] = useState(task);
 
   const handleDeleteClick = () => {
     handleDeleteTask(taskIndex);
@@ -10,7 +10,6 @@ const TaskCard = ({ task, taskIndex, handleEditTask, handleDeleteTask }) => {
 
   const handleEditClick = () => {
     setEditMode(!editMode);
-    setTaskValue(task);
   };
 
   const handleChange = (e) => {
