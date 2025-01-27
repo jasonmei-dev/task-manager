@@ -8,9 +8,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5500;
 
-app.get('/', (req, res) => res.send('Server is ready'));
+app.use(express.json()); // allows us to accept JSON data in the req.body
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/tasks', taskRoutes);
+
+app.get('/', (req, res) => res.send('Server is ready'));
 
 app.listen(PORT, () => {
   connectDB();
