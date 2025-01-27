@@ -12,7 +12,7 @@ export const getTasks = async (req, res) => {
   }
 };
 
-// CREATE task
+// CREATE a task
 export const createTask = async (req, res) => {
   const task = req.body; // user will send this data
 
@@ -31,7 +31,7 @@ export const createTask = async (req, res) => {
   }
 };
 
-// UPDATE task
+// UPDATE a task
 export const updateTask = async (req, res) => {
   const { id } = req.params;
   const task = req.body;
@@ -48,6 +48,23 @@ export const updateTask = async (req, res) => {
     const updatedTask = await Task.findByIdAndUpdate(id, task, { new: true });
     res.status(200).json({ success: true, data: updatedTask });
   } catch (error) {
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+// DELETE a task
+export const deleteTask = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ success: false, message: 'Invalid product ID' });
+  }
+
+  try {
+    await Task.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: 'Task deleted' });
+  } catch (error) {
+    console.log('Error in deleting task:', error.message);
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };

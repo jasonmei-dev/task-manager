@@ -1,5 +1,5 @@
 import express from 'express';
-import { getTasks, createTask, updateTask } from '../controllers/taskController.js';
+import { getTasks, createTask, updateTask, deleteTask } from '../controllers/taskController.js';
 
 const router = express.Router();
 
@@ -10,6 +10,6 @@ router.post('/', createTask);
 // // UPDATE a task
 router.put('/:id', updateTask);
 // // DELETE a task
-// router.delete('/:id', deleteTask);
+router.delete('/:id', deleteTask);
 
 export default router;
