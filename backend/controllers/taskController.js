@@ -37,7 +37,7 @@ export const updateTask = async (req, res) => {
   const task = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ success: false, message: 'Invalid Task ID' });
+    return res.status(404).json({ success: false, message: 'Invalid task ID' });
   }
 
   if (!task.description) {
@@ -57,7 +57,7 @@ export const deleteTask = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ success: false, message: 'Invalid product ID' });
+    return res.status(404).json({ success: false, message: 'Invalid task ID' });
   }
 
   try {

@@ -6,6 +6,16 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    completed: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    taskList: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'TaskList',
+      required: true,
+    },
   },
   {
     timestamps: true,

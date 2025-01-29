@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import taskRoutes from './routes/taskRoutes.js';
+import taskListRoutes from './routes/taskListRoutes.js';
 import { connectDB } from './config/db.js';
 
 dotenv.config();
@@ -12,6 +13,7 @@ app.use(express.json()); // allows us to accept JSON data in the req.body
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/tasks', taskRoutes);
+app.use('/api/tasklists', taskListRoutes);
 
 app.get('/', (req, res) => res.send('Server is ready'));
 
