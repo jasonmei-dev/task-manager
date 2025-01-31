@@ -6,6 +6,11 @@ const taskListSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     tasks: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,4 +25,4 @@ const taskListSchema = new mongoose.Schema(
 
 const TaskList = mongoose.model('TaskList', taskListSchema);
 
-export default taskListSchema;
+export default TaskList;
