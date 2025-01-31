@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Task from '../models/taskModel.js';
+import TaskList from '../models/taskListModel.js';
 
 // GET all tasks
 export const getTasks = async (req, res) => {
@@ -14,16 +15,19 @@ export const getTasks = async (req, res) => {
 
 // CREATE a task
 export const createTask = async (req, res) => {
-  const task = req.body; // user will send this data
+  const { description, taskListId } = req.body;
 
-  if (!task.description) {
+  if (!description) {
     return res.status(400).json({ success: false, message: 'Please provide all fields' });
   }
-
-  const newTask = new Task(task);
-
   try {
-    await newTask.save();
+    const newTask = await Task.create({
+      description,
+      taskList: taskListId,
+    });
+
+    await TaskList.findByIdAndUpdate(taskListId, { $push: { tasks: newTask._id } });
+
     res.status(201).json({ success: true, data: newTask });
   } catch (error) {
     console.log('Error in creating task:', error.message);
