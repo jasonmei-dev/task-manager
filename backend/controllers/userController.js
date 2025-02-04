@@ -1,4 +1,5 @@
 import express from 'express';
+import generateToken from '../utils/generateToken.js';
 import User from '../models/userModel.js';
 import TaskList from '../models/taskListModel.js';
 
@@ -43,7 +44,10 @@ export const registerUser = async (req, res) => {
       password,
     });
 
-    res.status(201).json({ success: true, data: user });
+    if (user) {
+      generateToken(res, user._id);
+      return res.status(201).json({ success: true, data: user });
+    }
   } catch (error) {
     console.log('Error registering user:', error.message);
     res.status(400).json({ success: false, message: 'Invalid user data' });
