@@ -2,10 +2,7 @@ import express from 'express';
 import User from '../models/userModel.js';
 import TaskList from '../models/taskListModel.js';
 
-export const authUser = async (req, res) => {
-  res.status(200).json({ message: 'Auth User' });
-};
-
+// GET all users (for testing)
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find().populate('taskLists');
@@ -16,20 +13,60 @@ export const getUsers = async (req, res) => {
   }
 };
 
-export const registerUser = async (req, res) => {
-  const user = req.body;
+// @desc Auth user/set token
+// @route POST /api/users/auth
+// @access Public
+export const authUser = async (req, res) => {
+  res.status(200).json({ message: 'Auth User' });
+};
 
-  if (!user.name || !user.email || !user.password) {
-    return res.status(400).json({ success: false, message: 'Please provide all fields' });
+// @desc Register a new user
+// @route POST /api/users
+// @access Public
+export const registerUser = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ success: false, message: 'All fields required' });
   }
 
-  const newUser = new User(user);
+  if (userExists) {
+    return res.status(400).json({ success: false, message: 'User already exists' });
+  }
 
   try {
-    await newUser.save();
-    res.status(201).json({ success: true, data: newUser });
+    const user = await User.create({
+      name,
+      email,
+      password,
+    });
+
+    res.status(201).json({ success: true, data: user });
   } catch (error) {
-    console.log('Error in creating user:', error.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    console.log('Error registering user:', error.message);
+    res.status(400).json({ success: false, message: 'Invalid user data' });
   }
+};
+
+// @desc Logout user
+// @route POST /api/users/logout
+// @access Public
+export const logoutUser = async (req, res) => {
+  res.status(200).json({ message: 'User logged out' });
+};
+
+// @desc Get user profile
+// @route GET /api/users/profile
+// @access Private
+export const getUserProfile = async (req, res) => {
+  res.status(200).json({ message: 'User profile' });
+};
+
+// @desc Update user profile
+// @route PUT /api/users/profile
+// @access Private
+export const updateUserProfile = async (req, res) => {
+  res.status(200).json({ message: 'Update user profile' });
 };
