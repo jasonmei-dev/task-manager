@@ -18,7 +18,26 @@ export const getUsers = async (req, res) => {
 // @route POST /api/users/auth
 // @access Public
 export const authUser = async (req, res) => {
-  res.status(200).json({ message: 'Auth User' });
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (user && (await user.matchPassword(password))) {
+      generateToken(res, user._id);
+      res.status(201).json({
+        success: true,
+        data: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+      });
+    }
+  } catch (error) {
+    console.log('Error in authorizing user:', error.message);
+    res.status(401).json({ success: false, message: 'Invalid email or password' });
+  }
 };
 
 // @desc Register a new user
@@ -27,11 +46,11 @@ export const authUser = async (req, res) => {
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  const userExists = await User.findOne({ email });
-
   if (!name || !email || !password) {
     return res.status(400).json({ success: false, message: 'All fields required' });
   }
+
+  const userExists = await User.findOne({ email });
 
   if (userExists) {
     return res.status(400).json({ success: false, message: 'User already exists' });
@@ -46,7 +65,7 @@ export const registerUser = async (req, res) => {
 
     if (user) {
       generateToken(res, user._id);
-      return res.status(201).json({ success: true, data: user });
+      res.status(201).json({ success: true, data: user });
     }
   } catch (error) {
     console.log('Error registering user:', error.message);
