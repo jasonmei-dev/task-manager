@@ -4,6 +4,7 @@ import userRoutes from './routes/userRoutes.js';
 import taskListRoutes from './routes/taskListRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import { connectDB } from './config/db.js';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 5500;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use('/api/users', userRoutes);
 app.use('/api/tasklists', taskListRoutes);
