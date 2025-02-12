@@ -65,7 +65,14 @@ export const registerUser = async (req, res) => {
 
     if (user) {
       generateToken(res, user._id);
-      res.status(201).json({ success: true, data: user });
+      res.status(201).json({
+        success: true,
+        data: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+      });
     }
   } catch (error) {
     console.log('Error registering user:', error.message);
@@ -77,7 +84,17 @@ export const registerUser = async (req, res) => {
 // @route POST /api/users/logout
 // @access Public
 export const logoutUser = async (req, res) => {
-  res.status(200).json({ message: 'User logged out' });
+  try {
+    res.cookie('jwt', '', {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+
+    res.status(200).json({ success: true, message: 'User logged out' });
+  } catch (error) {
+    console.log('Error logging out user:', error.message);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 };
 
 // @desc Get user profile
