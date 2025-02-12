@@ -101,7 +101,14 @@ export const logoutUser = async (req, res) => {
 // @route GET /api/users/profile
 // @access Private
 export const getUserProfile = async (req, res) => {
-  res.status(200).json({ message: 'User profile' });
+  const user = {
+    _id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    taskLists: req.user.taskLists,
+  };
+
+  res.status(200).json(user);
 };
 
 // @desc Update user profile
