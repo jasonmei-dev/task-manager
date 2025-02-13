@@ -33,10 +33,12 @@ export const authUser = async (req, res) => {
           email: user.email,
         },
       });
+    } else {
+      res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
   } catch (error) {
     console.log('Error in authorizing user:', error.message);
-    res.status(401).json({ success: false, message: 'Invalid email or password' });
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
@@ -73,10 +75,12 @@ export const registerUser = async (req, res) => {
           email: user.email,
         },
       });
+    } else {
+      res.status(400).json({ success: false, message: 'Invalid user data' });
     }
   } catch (error) {
     console.log('Error registering user:', error.message);
-    res.status(400).json({ success: false, message: 'Invalid user data' });
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
@@ -108,12 +112,37 @@ export const getUserProfile = async (req, res) => {
     taskLists: req.user.taskLists,
   };
 
-  res.status(200).json(user);
+  res.status(200).json({ success: true, data: user });
 };
 
 // @desc Update user profile
 // @route PUT /api/users/profile
 // @access Private
 export const updateUserProfile = async (req, res) => {
-  res.status(200).json({ message: 'Update user profile' });
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+
+      res.status(200).json({
+        success: true,
+        data: {
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+        },
+      });
+    }
+  } catch (error) {
+    console.log('Error updating user:', error.message);
+    res.status(404).json({ success: false, message: 'User not found' });
+  }
 };
