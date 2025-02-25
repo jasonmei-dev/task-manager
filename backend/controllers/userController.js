@@ -6,13 +6,7 @@ import TaskList from '../models/taskListModel.js';
 // GET all users (for testing)
 export const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find().populate('taskLists');
-
-  if (users) {
-    res.status(200).json({ success: true, data: users });
-  } else {
-    res.status(500);
-    throw new Error('Error in fetching users');
-  }
+  res.status(200).json({ success: true, data: users });
 });
 
 // @desc Auth user & set token

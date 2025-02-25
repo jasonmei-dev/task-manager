@@ -1,68 +1,58 @@
 import mongoose from 'mongoose';
+import asyncHandler from 'express-async-handler';
 import TaskList from '../models/taskListModel.js';
 import User from '../models/userModel.js';
 
 // GET all task lists
-export const getTaskLists = async (req, res) => {
-  try {
-    const taskLists = await TaskList.find({});
-    res.status(200).json({ success: true, data: taskLists });
-  } catch (error) {
-    console.log('Error in fetching tasks:', error.message);
-    res.status(500).json({ success: false, message: 'Sever Error' });
-  }
-};
+export const getTaskLists = asyncHandler(async (req, res) => {
+  const taskLists = await TaskList.find({});
+  res.status(200).json({ success: true, data: taskLists });
+});
 
 // CREATE a task list
-export const createTaskList = async (req, res) => {
-  try {
-    const { name, userId } = req.body;
-    console.log(req.body);
+export const createTaskList = asyncHandler(async (req, res) => {
+  const { name, userId } = req.body;
 
-    const newTaskList = await TaskList.create({ name, user: userId });
-
-    await User.findByIdAndUpdate(userId, { $push: { taskLists: newTaskList._id } });
-    res.status(201).json({ success: true, data: newTaskList });
-  } catch (error) {
-    console.log('Error in creating task list:', error.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
+  if (!name) {
+    res.status(400);
+    throw new Error('Task list name is required');
   }
-};
+
+  const newTaskList = await TaskList.create({ name, user: userId });
+
+  await User.findByIdAndUpdate(userId, { $push: { taskLists: newTaskList._id } });
+  res.status(201).json({ success: true, data: newTaskList });
+});
+
+// DELETE a task list
+export const deleteTaskList = asyncHandler(async (req, res) => {
+  const { taskListId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(taskListId)) {
+    res.status(404);
+    throw new Error('Invalid task list ID');
+  }
+
+  await TaskList.findByIdAndDelete(taskListId);
+  res.status(200).json({ success: true, message: 'Task list deleted' });
+});
 
 // UPDATE a task list
-export const updateTaskList = async (req, res) => {
-  const { id } = req.params;
+export const updateTaskList = asyncHandler(async (req, res) => {
+  const { taskListId } = req.params;
   const taskList = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ success: false, message: 'Invalid TaskList ID' });
+  if (!mongoose.Types.ObjectId.isValid(taskListId)) {
+    res.status(404);
+    throw new Error('Invalid task list ID');
   }
 
   if (!taskList.name) {
-    return res.status(400).json({ success: false, message: 'Please provide all fields' });
+    res.status(400);
+    throw new Error('Task list name is required');
   }
 
-  try {
-    const updatedTaskList = await TaskList.findByIdAndUpdate(id, task, { new: true });
-    res.status(200).json({ success: true, data: updatedTaskList });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Server Error' });
-  }
-};
+  const updatedTaskList = await TaskList.findByIdAndUpdate(taskListId, taskList, { new: true });
 
-// DELETE a task list
-export const deleteTaskList = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ success: false, message: 'Invalid task list ID' });
-  }
-
-  try {
-    await TaskList.findByIdAndDelete(id);
-    res.status(200).json({ success: true, message: 'TaskList deleted' });
-  } catch (error) {
-    console.log('Error in deleting task:', error.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
-  }
-};
+  res.status(200).json({ success: true, data: updatedTaskList });
+});
