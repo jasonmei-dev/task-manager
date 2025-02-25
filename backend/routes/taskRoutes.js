@@ -3,13 +3,9 @@ import { getTasks, createTask, updateTask, deleteTask } from '../controllers/tas
 
 const router = express.Router();
 
-// GET all tasks
-router.get('/', getTasks);
-// CREATE a task
-router.post('/', createTask);
-// UPDATE a task
-router.put('/:id', updateTask);
-// DELETE a task
-router.delete('/:id', deleteTask);
+router.get('/tasks', getTasks);
+router.post('/tasks', createTask);
+router.put('/tasks/:taskId', updateTask);
+router.delete('/tasks/:taskId', deleteTask);
 
 export default router;

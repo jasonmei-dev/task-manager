@@ -3,9 +3,9 @@ import { getTaskLists, createTaskList, updateTaskList, deleteTaskList } from '..
 
 const router = express.Router();
 
-router.get('/', getTaskLists);
-router.post('/', createTaskList);
-router.put('/:id', updateTaskList);
-router.delete('/:id', deleteTaskList);
+router.get('/tasklists', getTaskLists); // for testing
+router.post('/tasklists', createTaskList);
+router.put('/tasklists/:taskListId', updateTaskList);
+router.delete('/tasklists/:taskListId', deleteTaskList);
 
 export default router;

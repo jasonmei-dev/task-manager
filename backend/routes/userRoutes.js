@@ -4,10 +4,10 @@ import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', getUsers); // for testing
-router.post('/auth', authUser);
-router.post('/', registerUser);
-router.post('/logout', logoutUser);
-router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+router.get('/users', getUsers); // for testing
+router.post('/users', registerUser);
+router.post('/users/auth', authUser);
+router.route('/users/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+router.post('/users/logout', logoutUser);
 
 export default router;
