@@ -34,18 +34,15 @@ export const deleteTaskList = asyncHandler(async (req, res) => {
     throw new Error('Invalid task list ID');
   }
 
-  const taskList = await TaskList.findById(taskListId);
+  const taskList = await TaskList.findByIdAndDelete(taskListId);
 
   if (!taskList) {
     res.status(404);
     throw new Error('Task list not found');
   }
 
-  // Delete all tasks inside this task list
+  // Delete all tasks inside the task list
   await Task.deleteMany({ taskList: taskListId });
-
-  // Delete the task list itself
-  await TaskList.findByIdAndDelete(taskListId);
 
   // Remove taskLisId from User's taskLists array
   await User.findByIdAndUpdate(taskList.user, { $pull: { taskLists: taskListId } });
