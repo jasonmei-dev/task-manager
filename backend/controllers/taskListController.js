@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import asyncHandler from 'express-async-handler';
 import TaskList from '../models/taskListModel.js';
+import Task from '../models/taskModel.js';
 import User from '../models/userModel.js';
 
 // GET all task lists
@@ -33,8 +34,23 @@ export const deleteTaskList = asyncHandler(async (req, res) => {
     throw new Error('Invalid task list ID');
   }
 
+  const taskList = await TaskList.findById(taskListId);
+
+  if (!taskList) {
+    res.status(404);
+    throw new Error('Task list not found');
+  }
+
+  // Delete all tasks inside this task list
+  await Task.deleteMany({ taskList: taskListId });
+
+  // Delete the task list itself
   await TaskList.findByIdAndDelete(taskListId);
-  res.status(200).json({ success: true, message: 'Task list deleted' });
+
+  // Remove taskLisId from User's taskLists array
+  await User.findByIdAndUpdate(taskList.user, { $pull: { taskLists: taskListId } });
+
+  res.status(200).json({ success: true, message: 'Task list deleted and tasks automatically deleted' });
 });
 
 // UPDATE a task list
