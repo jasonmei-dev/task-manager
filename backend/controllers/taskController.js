@@ -3,13 +3,15 @@ import asyncHandler from 'express-async-handler';
 import Task from '../models/taskModel.js';
 import TaskList from '../models/taskListModel.js';
 
-// GET all tasks
+// GET all tasks (for testing)
 export const getTasks = asyncHandler(async (req, res) => {
   const tasks = await Task.find({});
   res.status(200).json({ success: true, data: tasks });
 });
 
-// CREATE a task
+// @desc Create a task
+// @route POST /api/tasks
+// @access Private
 export const createTask = asyncHandler(async (req, res) => {
   const { description, taskListId } = req.body;
 
@@ -28,7 +30,9 @@ export const createTask = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, data: newTask });
 });
 
-// DELETE a task
+// @desc Delete a task
+// @route DELETE /api/tasks/:taskId
+// @access Private
 export const deleteTask = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
 
@@ -50,7 +54,9 @@ export const deleteTask = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: 'Task deleted' });
 });
 
-// UPDATE a task
+// @desc Update a task
+// @route PUT /api/tasks/:taskId
+// @access Private
 export const updateTask = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
   const task = req.body;

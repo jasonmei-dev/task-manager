@@ -4,13 +4,15 @@ import TaskList from '../models/taskListModel.js';
 import Task from '../models/taskModel.js';
 import User from '../models/userModel.js';
 
-// GET all task lists
+// GET all task lists (for testing)
 export const getTaskLists = asyncHandler(async (req, res) => {
   const taskLists = await TaskList.find({});
   res.status(200).json({ success: true, data: taskLists });
 });
 
-// CREATE a task list
+// @desc Create a task list
+// @route POST /api/tasklists
+// @access Private
 export const createTaskList = asyncHandler(async (req, res) => {
   const { name, userId } = req.body;
 
@@ -25,7 +27,9 @@ export const createTaskList = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, data: newTaskList });
 });
 
-// DELETE a task list
+// @desc Delete a task list
+// @route DELETE /api/tasklists/:taskListId
+// @access Private
 export const deleteTaskList = asyncHandler(async (req, res) => {
   const { taskListId } = req.params;
 
@@ -50,7 +54,9 @@ export const deleteTaskList = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: 'Task list deleted and tasks automatically deleted' });
 });
 
-// UPDATE a task list
+// @desc Update a task list
+// @route PUT /api/tasklists/:taskListId
+// @access Private
 export const updateTaskList = asyncHandler(async (req, res) => {
   const { taskListId } = req.params;
   const taskList = req.body;
@@ -68,4 +74,15 @@ export const updateTaskList = asyncHandler(async (req, res) => {
   const updatedTaskList = await TaskList.findByIdAndUpdate(taskListId, taskList, { new: true });
 
   res.status(200).json({ success: true, data: updatedTaskList });
+});
+
+// @desc Get user tasklists
+// @route GET /api/users/:userId/tasklists
+// @access Private
+export const getUserTaskLists = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const taskLists = await TaskList.find({ user: userId }).populate('tasks');
+
+  res.status(200).json({ success: true, data: taskLists });
 });
