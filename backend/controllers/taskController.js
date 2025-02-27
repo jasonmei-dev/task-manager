@@ -37,7 +37,16 @@ export const deleteTask = asyncHandler(async (req, res) => {
     throw new Error('Invalid task ID');
   }
 
-  await Task.findByIdAndDelete(taskId);
+  const task = await Task.findByIdAndDelete(taskId);
+
+  if (!task) {
+    res.status(404);
+    throw new Error('Task not found');
+  }
+
+  // Remove taskId from TaskList's tasks array
+  await TaskList.findByIdAndUpdate(task.taskList, { $pull: { tasks: taskId } });
+
   res.status(200).json({ success: true, message: 'Task deleted' });
 });
 
