@@ -84,7 +84,7 @@ export const getUserTaskLists = asyncHandler(async (req, res) => {
 
   if (req.user._id.toString() !== userId) {
     res.status(403);
-    throw new Error('Not authorized to access these task lists');
+    throw new Error('User not authorized to access this resource');
   }
 
   const taskLists = await TaskList.find({ user: userId }).populate('tasks');

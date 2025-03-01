@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToken.js';
 import User from '../models/userModel.js';
 import TaskList from '../models/taskListModel.js';
+import Task from '../models/taskModel.js';
 
 // GET all users (for testing)
 export const getUsers = asyncHandler(async (req, res) => {
@@ -125,4 +126,30 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('User not found');
   }
+});
+
+// @desc Delete user profile
+// @route DELETE /api/users/:userId
+// @access Private
+export const deleteUserProfile = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const taskLists = await TaskList.find({ user: userId });
+  const taskListIds = taskLists.map((taskList) => taskList._id);
+
+  // Delete all tasks belonging to user's task lists
+  await Task.deleteMany({ taskList: { $in: taskListIds } });
+
+  // Delete all task lists belonging to the user
+  await TaskList.deleteMany({ user: userId });
+
+  // Delete the user
+  await User.findByIdAndDelete(userId);
+
+  // Clear JWT and logout the user
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json({ success: true, message: 'User deleted successfully' });
 });
