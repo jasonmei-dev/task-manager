@@ -23,6 +23,7 @@ function App() {
 
   return (
     <>
+      <h1>Hello World</h1>
       <TaskInput inputValue={inputValue} setInputValue={setInputValue} handleAddTask={handleAddTask} />
       <TaskList tasks={tasks} handleEditTask={handleEditTask} handleDeleteTask={handleDeleteTask} />
     </>
