@@ -14,8 +14,10 @@ const TaskInput = ({ inputValue, setInputValue, handleAddTask }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input onChange={handleChange} value={inputValue} placeholder="Enter task" />
-        <button type="submit">Add Task</button>
+        <input className="border-2 border-black" onChange={handleChange} value={inputValue} placeholder="Enter task" />
+        <button type="submit" className="bg-blue-500 cursor-pointer">
+          Add Task
+        </button>
       </form>
     </div>
   );
