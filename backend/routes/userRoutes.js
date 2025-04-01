@@ -9,6 +9,6 @@ router.post('/users', registerUser);
 router.post('/users/auth', authUser);
 router.post('/users/logout', logoutUser);
 router.route('/users/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
-router.delete('/users/:userId', protect, deleteUserProfile);
+router.delete('/users/delete', protect, deleteUserProfile);
 
 export default router;

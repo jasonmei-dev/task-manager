@@ -132,7 +132,8 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 // @route DELETE /api/users/:userId
 // @access Private
 export const deleteUserProfile = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  // const { userId } = req.params;
+  const userId = req.user._id;
   const taskLists = await TaskList.find({ user: userId });
   const taskListIds = taskLists.map((taskList) => taskList._id);
 
